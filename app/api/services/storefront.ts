@@ -1,0 +1,72 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { StorefrontResponse } from '../types/storefrontResponse';
+import axios from 'axios';
+import { router } from 'expo-router';
+import { getEntToken } from '../getEntitlements';
+import { clientInfo } from '../lib/clientInfo';
+import { getAccToken } from './storeAccessToken';
+import { getPuuid } from './storePuuid';
+
+type cachedStorefrontResponse = {
+    response: StorefrontResponse;
+    expiry: number;
+}
+
+async function cacheStorefront(): Promise<cachedStorefrontResponse | null> {
+    try {
+        const existingCache = await getStorefrontFromCache()
+        if (existingCache && !(existingCache.expiry < Date.now())) return existingCache
+        const now = new Date();
+        now.setHours(now.getHours() - 3);
+        const expiry = now.setHours(21, 0, 0, 0);
+        const access_token = await getAccToken();
+        const entitlements = await getEntToken();
+        const puuid = await getPuuid();
+        const shard = "na";
+        const client = await clientInfo();
+        if (!access_token || !entitlements || !puuid || access_token.expiry < Date.now()) {
+            router.replace("/");
+            return null;
+        }
+        const headers = {
+            "X-Riot-ClientPlatform": client.platform,
+            "X-Riot-ClientVersion": client.version,
+            "X-Riot-Entitlements-JWT": entitlements.entToken,
+            "Authorization": `Bearer ${access_token.accToken}`
+        }
+        const getstorefront = await axios.get<StorefrontResponse>(`https://pd.${shard}.a.pvp.net/store/v2/storefront/${puuid}`, { headers: headers })
+        const body: cachedStorefrontResponse = {
+            response: getstorefront.data,
+            expiry,
+        }
+        await AsyncStorage.setItem("cache/storefront", JSON.stringify(body))
+        return body;
+    } catch (error) {
+        console.log(error)
+        return null
+
+    }
+}
+
+async function getStorefrontFromCache() {
+    try {
+        const item = await AsyncStorage.getItem("cache/storefront");
+        if (item) {
+            const getEnt: cachedStorefrontResponse = JSON.parse(item);
+            return getEnt;
+        }
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+async function getStoreData(data: cachedStorefrontResponse) {
+    const getWeaponInfo = await axios.get(`https://valorant-api.com/v1/weapons/skinlevels?language=pt-BR`)
+    const detailedInfo = data.response.SkinsPanelLayout.SingleItemOffers.map((item) => {
+        const weapon = getWeaponInfo.data.data.find((weapon: any) => weapon.uuid === item)
+        return weapon
+    })
+    return detailedInfo
+}
+
+export { cacheStorefront, getStorefrontFromCache, getStoreData }
