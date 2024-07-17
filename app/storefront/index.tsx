@@ -1,12 +1,6 @@
 import { View, Image, SectionList, Text } from "react-native";
-import { cacheStorefront, getStoreData } from "../api/services/storefront";
+import { cacheStorefront } from "../api/services/storefront";
 import { useEffect, useState } from "react";
-import { StorefrontResponse } from "../api/types/storefrontResponse";
-
-type cachedStorefrontResponse = {
-    response: StorefrontResponse;
-    expiry: number;
-};
 
 type DataBody = {
     title: string;
@@ -14,7 +8,7 @@ type DataBody = {
         uuid: string;
         displayIcon: string;
         displayName: string;
-        streamedVideo: string;
+        streamedVideo: string | null;
     }[];
 };
 
@@ -23,21 +17,20 @@ export default function Storefront() {
 
     async function getStorefront() {
         const storefront = await cacheStorefront();
-        const storeData = await getStoreData(storefront as cachedStorefrontResponse);
 
         const groupedData: { [key: string]: DataBody } = {};
-        storeData.forEach((item) => {
-            if (!groupedData[item.displayName]) {
-                groupedData[item.displayName] = {
-                    title: item.displayName,
+        storefront?.response.forEach((item) => {
+            if (!groupedData[item.weapon.displayName]) {
+                groupedData[item.weapon.displayName] = {
+                    title: item.weapon.displayName,
                     data: []
                 };
             }
-            groupedData[item.displayName].data.push({
-                uuid: item.uuid,
-                displayIcon: item.displayIcon,
-                displayName: item.displayName,
-                streamedVideo: item.streamedVideo,
+            groupedData[item.weapon.displayName].data.push({
+                uuid: item.weapon.uuid,
+                displayIcon: item.weapon.displayIcon,
+                displayName: item.weapon.displayName,
+                streamedVideo: item.weapon.streamedVideo,
             });
         });
 

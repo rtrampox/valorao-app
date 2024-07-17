@@ -214,3 +214,33 @@ export type StorefrontResponse = {
         BonusStoreRemainingDurationInSeconds: number;
     } | undefined;
 };
+
+export type Storefront = {
+    weapon: {
+        uuid: string;
+        assetPath: string;
+        displayIcon: string;
+        displayName: string;
+        levelItem: string | null;
+        streamedVideo: string | null;
+    };
+    cost: number;
+    item: {
+        OfferID: string;
+        IsDirectPurchase: boolean;
+        StartDate: string;
+        Cost: {
+            [x: string]: number;
+        };
+        Rewards: {
+            ItemTypeID: string;
+            ItemID: string;
+            Quantity: number;
+        }[];
+    };
+}
+
+export type CachedStorefront = {
+    response: Storefront[];
+    expiry: number;
+}

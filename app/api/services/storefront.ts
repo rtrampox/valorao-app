@@ -6,13 +6,9 @@ import { getEntToken } from '../getEntitlements';
 import { clientInfo } from '../lib/clientInfo';
 import { getAccToken } from './storeAccessToken';
 import { getPuuid } from './storePuuid';
+import { Storefront, CachedStorefront } from '../types/storefrontResponse';
 
-type cachedStorefrontResponse = {
-    response: StorefrontResponse;
-    expiry: number;
-}
-
-async function cacheStorefront(): Promise<cachedStorefrontResponse | null> {
+async function cacheStorefront(): Promise<CachedStorefront | null> {
     try {
         const existingCache = await getStorefrontFromCache()
         if (existingCache && !(existingCache.expiry < Date.now())) return existingCache
@@ -24,10 +20,12 @@ async function cacheStorefront(): Promise<cachedStorefrontResponse | null> {
         const puuid = await getPuuid();
         const shard = "na";
         const client = await clientInfo();
+
         if (!access_token || !entitlements || !puuid || access_token.expiry < Date.now()) {
             router.replace("/");
             return null;
         }
+
         const headers = {
             "X-Riot-ClientPlatform": client.platform,
             "X-Riot-ClientVersion": client.version,
@@ -35,10 +33,24 @@ async function cacheStorefront(): Promise<cachedStorefrontResponse | null> {
             "Authorization": `Bearer ${access_token.accToken}`
         }
         const getstorefront = await axios.get<StorefrontResponse>(`https://pd.${shard}.a.pvp.net/store/v2/storefront/${puuid}`, { headers: headers })
-        const body: cachedStorefrontResponse = {
-            response: getstorefront.data,
+
+        const getWeaponData = await axios.get(`https://valorant-api.com/v1/weapons/skinlevels`)
+
+        const detailedData: Storefront[] = getstorefront.data.SkinsPanelLayout.SingleItemStoreOffers.map((item) => {
+            const weapon = getWeaponData.data.data.find((weapon: any) => weapon.uuid === item.OfferID)
+            const cost = Object.values(item.Cost)[0]
+            return {
+                weapon,
+                cost,
+                item,
+            }
+        })
+
+        const body: CachedStorefront = {
+            response: detailedData,
             expiry,
         }
+
         await AsyncStorage.setItem("cache/storefront", JSON.stringify(body))
         return body;
     } catch (error) {
@@ -48,25 +60,18 @@ async function cacheStorefront(): Promise<cachedStorefrontResponse | null> {
     }
 }
 
-async function getStorefrontFromCache() {
+async function getStorefrontFromCache(): Promise<CachedStorefront | null> {
     try {
         const item = await AsyncStorage.getItem("cache/storefront");
         if (item) {
-            const getEnt: cachedStorefrontResponse = JSON.parse(item);
+            const getEnt = JSON.parse(item);
             return getEnt;
         }
+        return null
     } catch (error) {
         console.log(error)
+        return null
     }
 }
 
-async function getStoreData(data: cachedStorefrontResponse) {
-    const getWeaponInfo = await axios.get(`https://valorant-api.com/v1/weapons/skinlevels?language=pt-BR`)
-    const detailedInfo = data.response.SkinsPanelLayout.SingleItemOffers.map((item) => {
-        const weapon = getWeaponInfo.data.data.find((weapon: any) => weapon.uuid === item)
-        return weapon
-    })
-    return detailedInfo
-}
-
-export { cacheStorefront, getStorefrontFromCache, getStoreData }
+export { cacheStorefront, getStorefrontFromCache }
