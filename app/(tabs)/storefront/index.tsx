@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import notifee, { AndroidImportance } from '@notifee/react-native'
 import messaging, { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
 import { Loading } from "~/components/loading";
-import CookieManager from "@react-native-cookies/cookies";
 
 type DataBody = {
     title: string;
@@ -49,8 +48,6 @@ export default function Storefront() {
 
     async function getStorefront() {
         const storefront = await cacheStorefront();
-        const cookies = await CookieManager.get('https://auth.riotgames.com')
-        console.log(cookies.ssid)
 
         const groupedData: { [key: string]: DataBody } = {}
         storefront?.response.forEach((item) => {

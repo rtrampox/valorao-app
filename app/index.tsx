@@ -15,11 +15,11 @@ import { Loading } from '~/components/loading';
 import { getPuuid, storePuuid } from './api/services/storePuuid';
 import { Button } from '~/components/button';
 import { getEntitlements, getEntToken } from './api/getEntitlements';
+import { storeSsidCookie } from './api/services/storeSsidCookie';
 
 export default function Screen() {
   const [hasToken, setHasToken] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
-  let webViewRef: WebView | null = null;
 
   const bottomSheetModalRef = React.useRef<BottomSheetModal>(null);
   const snapPoints = React.useMemo(() => ['25%', '98%'], []);
@@ -36,16 +36,13 @@ export default function Screen() {
     const enttoken = await getEntToken()
     if (token && !(token.expiry < Date.now()) && puuid && enttoken) {
       setHasToken(true)
-      return router.replace(`/tabs/storefront`)
+      return router.replace(`/(tabs)/storefront`)
     }
     setIsLoading(false)
     return setHasToken(false)
   }
   React.useEffect(() => {
     getLoggedInData()
-    return () => {
-      webViewRef = null;
-    };
   }, []);
 
   React.useEffect(() => {
@@ -62,16 +59,16 @@ export default function Screen() {
             <Button.Title>Voltar ao login</Button.Title>
           </Button>
           <BottomSheetModal
-            ref={bottomSheetModalRef}
             index={1}
             snapPoints={snapPoints}
             onChange={handleSheetChanges}
           >
             <BottomSheetView style={styles.contentContainer}>
               <View className='flex-1'>
-                <Text className='text-black p-2 text-center'>Lembre de clicar em "manter conectado", assim não será necessário fazer login novamente.</Text>
+                <Text className='text-black p-2 text-center'>
+                  Lembre de clicar em "manter conectado", assim não será necessário fazer login novamente.
+                </Text>
                 <WebView
-                  ref={(ref) => (webViewRef = ref)}
                   source={{ uri: 'https://auth.riotgames.com/authorize?redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&client_id=play-valorant-web-prod&response_type=token%20id_token&nonce=1&scope=account%20openid' }}
                   onNavigationStateChange={(data) => {
                     data.url.includes('https://playvalorant.com') && parseAuthRedirect(data.url, setIsLoading)
@@ -118,6 +115,7 @@ export async function parseAuthRedirect(url: string, setIsLoading: React.Dispatc
   setIsLoading(true)
   const searchParams = new URLSearchParams((new URL(url)).hash.slice(1));
   const accessToken = searchParams.get('access_token') ?? throwExpression('Access token missing from url');
+  const cookies = await CookieManager.get('https://auth.riotgames.com')
 
   const accessTokenParts = accessToken.split('.');
   if (accessTokenParts.length !== 3) {
@@ -135,5 +133,6 @@ export async function parseAuthRedirect(url: string, setIsLoading: React.Dispatc
   await storeAccToken(accessToken)
   await storePuuid(accessTokenData.sub)
   await getEntitlements(accessToken)
-  return router.replace(`/tabs/storefront`)
+  await storeSsidCookie(cookies.ssid.value)
+  return router.replace(`/(tabs)/storefront`)
 }

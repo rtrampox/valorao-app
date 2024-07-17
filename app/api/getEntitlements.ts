@@ -29,7 +29,7 @@ const storeEntToken = async (entToken: string) => {
             entToken,
             expiry: Date.now() + 3600000
         }
-        await AsyncStorage.setItem("entitlements_token", JSON.stringify(body))
+        await AsyncStorage.setItem("user/entitlementsToken", JSON.stringify(body))
     } catch (error) {
         console.log(error)
     }
@@ -37,7 +37,7 @@ const storeEntToken = async (entToken: string) => {
 
 const getEntToken = async () => {
     try {
-        const item = await AsyncStorage.getItem("entitlements_token");
+        const item = await AsyncStorage.getItem("user/entitlementsToken");
         if (item) {
             const getEnt: EntitlementsStorage = JSON.parse(item);
             return getEnt;

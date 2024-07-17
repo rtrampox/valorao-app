@@ -11,7 +11,7 @@ const storeAccToken = async (accToken: string) => {
             accToken,
             expiry: Date.now() + 3600000
         }
-        await AsyncStorage.setItem("access_token", JSON.stringify(body))
+        await AsyncStorage.setItem("user/accessToken", JSON.stringify(body))
     } catch (error) {
         console.log(error)
     }
@@ -19,7 +19,7 @@ const storeAccToken = async (accToken: string) => {
 
 const getAccToken = async () => {
     try {
-        const item = await AsyncStorage.getItem("access_token");
+        const item = await AsyncStorage.getItem("user/accessToken");
         if (item) {
             const getEnt: AccessTokenStorage = JSON.parse(item);
             return getEnt;
