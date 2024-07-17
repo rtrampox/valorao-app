@@ -6,12 +6,13 @@
     "dev": "expo start -c --ios",
     "dev:web": "expo start -c --web",
     "dev:android": "expo start -c --android",
-    "android": "expo start -c --android",
-    "ios": "expo start -c --ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "web": "expo start -c --web",
     "build:android": "eas build -p android --profile preview --local"
   },
   "dependencies": {
+    "@notifee/react-native": "^7.8.2",
     "@radix-ui/react-progress": "^1.0.3",
     "@radix-ui/react-tooltip": "^1.0.7",
     "@react-native-async-storage/async-storage": "1.23.1",
@@ -49,7 +50,8 @@
     "tailwind-merge": "^2.2.1",
     "tailwindcss": "^3.4.1",
     "tailwindcss-animate": "^1.0.7",
-    "zustand": "^4.4.7"
+    "zustand": "^4.4.7",
+    "expo-build-properties": "~0.12.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
