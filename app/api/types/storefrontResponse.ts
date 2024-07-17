@@ -216,14 +216,7 @@ export type StorefrontResponse = {
 };
 
 export type Storefront = {
-    weapon: {
-        uuid: string;
-        assetPath: string;
-        displayIcon: string;
-        displayName: string;
-        levelItem: string | null;
-        streamedVideo: string | null;
-    };
+    weapon: DetailedWeaponData;
     cost: number;
     item: {
         OfferID: string;
@@ -243,4 +236,25 @@ export type Storefront = {
 export type CachedStorefront = {
     response: Storefront[];
     expiry: number;
+}
+
+export type WeaponChromas = {
+    "uuid": string;
+    "displayName": string;
+    "displayIcon": string | null;
+    "fullRender": string;
+    "swatch": string | null;
+    "streamedVideo": string | null;
+    "assetPath": string;
+}
+
+export type DetailedWeaponData = {
+    uuid: string;
+    displayName: string;
+    themeUuid: string;
+    contentTierUuid: string;
+    displayIcon: string;
+    wallpaper: string | null;
+    assetPath: string;
+    chromas: WeaponChromas[];
 }

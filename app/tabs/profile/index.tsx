@@ -1,10 +1,10 @@
 import { View, Text, PlatformColor } from "react-native"
 import { router, useLocalSearchParams } from "expo-router"
 import { ArrowLeft } from "lucide-react-native"
-import { getEntitlements } from "../api/getEntitlements"
+import { getEntitlements } from "../../api/getEntitlements"
 import { useEffect, useState } from "react"
 import { Button } from "~/components/button"
-import { LogOut } from "../api/services/logout"
+import { LogOut } from "../../api/services/logout"
 import WebView from "react-native-webview"
 
 export default function ShowToken() {
@@ -31,7 +31,7 @@ export default function ShowToken() {
     }
 
     return (
-        <View className="flex-col flex-1 justify-center items-center gap-3 bg-background">
+        <View className="flex-col flex-1 justify-center items-center gap-3 bg-background mb-12">
             <Text className="text-zinc-100" selectable>{tripParams.accessToken?.toString()}</Text>
             <Text className="text-zinc-100" selectable>Entitlements token: {entitlements}</Text>
             <Text className="text-zinc-100" selectable selectionColor="blue">{tripParams.puuid?.toString()}</Text>

@@ -1,12 +1,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { StorefrontResponse } from '../types/storefrontResponse';
 import axios from 'axios';
 import { router } from 'expo-router';
 import { getEntToken } from '../getEntitlements';
 import { clientInfo } from '../lib/clientInfo';
 import { getAccToken } from './storeAccessToken';
 import { getPuuid } from './storePuuid';
-import { Storefront, CachedStorefront } from '../types/storefrontResponse';
+import { Storefront, CachedStorefront, DetailedWeaponData, WeaponChromas, StorefrontResponse } from '../types/storefrontResponse';
 
 async function cacheStorefront(): Promise<CachedStorefront | null> {
     try {
@@ -22,7 +21,7 @@ async function cacheStorefront(): Promise<CachedStorefront | null> {
         const client = await clientInfo();
 
         if (!access_token || !entitlements || !puuid || access_token.expiry < Date.now()) {
-            router.replace("/");
+            router.replace("/tabs/storefront");
             return null;
         }
 
@@ -34,13 +33,15 @@ async function cacheStorefront(): Promise<CachedStorefront | null> {
         }
         const getstorefront = await axios.get<StorefrontResponse>(`https://pd.${shard}.a.pvp.net/store/v2/storefront/${puuid}`, { headers: headers })
 
-        const getWeaponData = await axios.get(`https://valorant-api.com/v1/weapons/skinlevels`)
+        const getWeaponData = await axios.get(`https://valorant-api.com/v1/weapons/skinlevels?language=pt-BR`)
+        const detailedWeaponData = await axios.get(`https://valorant-api.com/v1/weapons/skins?language=pt-BR`)
 
         const detailedData: Storefront[] = getstorefront.data.SkinsPanelLayout.SingleItemStoreOffers.map((item) => {
             const weapon = getWeaponData.data.data.find((weapon: any) => weapon.uuid === item.OfferID)
+            const weaponDetailed: DetailedWeaponData = detailedWeaponData.data.data.find((data: DetailedWeaponData) => data.displayName === weapon.displayName)
             const cost = Object.values(item.Cost)[0]
             return {
-                weapon,
+                weapon: weaponDetailed,
                 cost,
                 item,
             }
