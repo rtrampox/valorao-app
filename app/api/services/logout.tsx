@@ -6,6 +6,7 @@ export async function LogOut() {
     await AsyncStorage.removeItem("user/entitlementsToken")
     await AsyncStorage.removeItem("user/puuid")
     await AsyncStorage.removeItem("cache/storefront")
+    await AsyncStorage.removeItem("cache/profile")
     await CookieManager.clearAll()
     await CookieManager.removeSessionCookies()
 }

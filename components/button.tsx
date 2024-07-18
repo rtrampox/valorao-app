@@ -31,7 +31,7 @@ function Button({
                 {
                     "bg-lime-300": variant === "primary",
                     "bg-zinc-800": variant === "secondary",
-                    "bg-red-700": variant === "destructive",
+                    "bg-red-700/75": variant === "destructive",
                     "bg-red-700/10 border border-red-700": variant === "destructive-outlined",
                 },
                 className
@@ -41,7 +41,7 @@ function Button({
             {...rest}
         >
             <ThemeContext.Provider value={{ variant }}>
-                {isLoading ? <ActivityIndicator className="text-lime-950" /> : children}
+                {isLoading ? <ActivityIndicator className="text-zinc-200" /> : children}
             </ThemeContext.Provider>
         </TouchableOpacity>
     )
@@ -55,6 +55,7 @@ function Title({ children }: TextProps) {
             className={clsx("text-base font-semibold", {
                 "text-lime-950": variant === "primary",
                 "text-zinc-200": variant === "secondary",
+                "text-zinc-200 text-center": variant === "destructive" || variant === "destructive-outlined",
             })}
         >
             {children}

@@ -31,7 +31,7 @@ export default function Screen() {
     const enttoken = await getEntToken()
     if (token && !(token.expiry < Date.now()) && puuid && enttoken) {
       setHasToken(true)
-      return router.replace(`/tabs/storefront`)
+      return router.replace(`/pages/storefront`)
     }
     setIsLoading(false)
     return setHasToken(false)

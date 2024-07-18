@@ -59,7 +59,7 @@ export default function Storefront() {
             }
             groupedData[item.weapon.displayName].data.push({
                 uuid: item.weapon.uuid,
-                displayIcon: item.weapon.displayIcon,
+                displayIcon: item.weapon.chromas[0].displayIcon || item.weapon.displayIcon,
                 displayName: item.weapon.displayName,
                 cost: item.cost,
             });
@@ -93,8 +93,8 @@ export default function Storefront() {
                                 source={{ uri: item.displayIcon || 'defaultURI' }}
                                 style={{ width: 300, height: 250, resizeMode: 'contain' }}
                             />
-                            <Text className="text-white text-xl absolute bottom-0 left-2">{item.displayName}</Text>
-                            <Text className="text-white text-xl absolute bottom-0 right-2 flex-row gap-3">
+                            <Text className="text-white text-xl absolute bottom-1 left-2">{item.displayName}</Text>
+                            <Text className="text-white text-xl absolute bottom-1 right-2 flex-row gap-3">
                                 <Image
                                     source={require('../../../assets/valorant/currencies/valorantPointsLargeIcon.png')}
                                     style={{ width: 17, height: 17, resizeMode: 'contain', marginLeft: 5 }}

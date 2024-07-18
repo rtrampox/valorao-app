@@ -5,7 +5,7 @@ import { getEntToken } from '../getEntitlements';
 import { clientInfo } from '../lib/clientInfo';
 import { getAccToken } from './storeAccessToken';
 import { getPuuid } from './storePuuid';
-import { Storefront, CachedStorefront, DetailedWeaponData, WeaponChromas, StorefrontResponse } from '../types/storefrontResponse';
+import { Storefront, CachedStorefront, DetailedWeaponData, StorefrontResponse } from '../types/storefrontResponse';
 
 async function cacheStorefront(): Promise<CachedStorefront | null> {
     try {
