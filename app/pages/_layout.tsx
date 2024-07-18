@@ -69,7 +69,8 @@ export default function RootLayout() {
                 tabBar={(props) => <TabBar {...props} />}
             >
                 <Tabs.Screen name="storefront/index" options={{ title: "Loja" }} />
-                <Tabs.Screen name="profile/index" options={{ title: "Perfil", }} />
+                <Tabs.Screen name="nightmarket/index" options={{ title: "Mercado Noturno" }} />
+                <Tabs.Screen name="profile/index" options={{ title: "Perfil" }} />
             </Tabs>
             <PortalHost />
         </ThemeProvider>

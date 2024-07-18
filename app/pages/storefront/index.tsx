@@ -5,7 +5,6 @@ import notifee, { AndroidImportance } from '@notifee/react-native'
 import messaging, { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
 import Skeleton from "react-native-reanimated-skeleton";
 import { LinearGradient } from 'expo-linear-gradient';
-import { Clock } from "lucide-react-native";
 import CountdownPage from "~/components/countdown";
 
 type DataBody = {
@@ -86,13 +85,14 @@ export default function Storefront() {
     }, []);
 
     return (
-        <View className="gap-40 mx-3 mb-12 mt-2">
+        <View className="gap-40 mx-3 mt-2">
             <Skeleton isLoading={isLoading}
-                containerStyle={{ width: "100%", height: "auto", gap: 8 }}
+                containerStyle={{ width: "100%", height: "auto", gap: 8, marginBottom: 170 }}
                 boneColor="#333"
                 highlightColor="#444"
                 animationDirection="horizontalRight"
                 layout={[
+                    { key: "storeCountdown", justifyContent: 'center', alignItems: 'center', width: '100%', height: 200 },
                     { key: "storeItem1", justifyContent: 'center', alignItems: 'center', width: '100%', height: 200 },
                     { key: "storeItem2", justifyContent: 'center', alignItems: 'center', width: '100%', height: 200 },
                     { key: "storeItem3", justifyContent: 'center', alignItems: 'center', width: '100%', height: 200 },

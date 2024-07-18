@@ -9,8 +9,8 @@ import { Storefront, CachedStorefront, DetailedWeaponData, StorefrontResponse } 
 
 async function cacheStorefront(): Promise<CachedStorefront | null> {
     try {
-        // const existingCache = await getStorefrontFromCache()
-        // if (existingCache && !(existingCache.expiry < Date.now())) return existingCache
+        const existingCache = await getStorefrontFromCache()
+        if (existingCache && !(existingCache.expiry < Date.now())) return existingCache
         const now = new Date();
         now.setHours(now.getHours() - 3);
         const expiry = now.setHours(21, 0, 0, 0);

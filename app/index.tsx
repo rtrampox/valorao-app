@@ -71,7 +71,7 @@ export default function Screen() {
           enableContentPanningGesture={false}
         >
           <BottomSheetView className='flex-1'>
-            <Text className='text-black p-2 text-center'>Lembre de clicar em "Manter login", assim não será necessário fazer login novamente.</Text>
+            <Text className='text-black p-2 text-center'>Lembre de clicar em "Manter login" e aceitar os cookies, assim não será necessário fazer login novamente.</Text>
             <WebView
               ref={(ref) => (webViewRef = ref)}
               source={{ uri: `${uri.url}?client_id=${uri.clientId}&redirect_uri=${uri.redirectUri}&response_type=${uri.resposeType}&nonce=1&scope=${uri.scope}&ui_locales=pt-BR` }}

@@ -1,13 +1,14 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 import React from "react";
-import { Ban, LucideProps, ShoppingCart, User } from "lucide-react-native";
+import { Ban, CircleDollarSignIcon, LucideProps, ShoppingCart, User } from "lucide-react-native";
 import * as NavigationBar from 'expo-navigation-bar';
 
 const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
   const item: { [key: string]: (props: LucideProps) => JSX.Element } = {
     Loja: (props: LucideProps) => <ShoppingCart {...props} />,
     Perfil: (props: LucideProps) => <User {...props} />,
+    'Mercado Noturno': (props: LucideProps) => <CircleDollarSignIcon {...props} />,
   };
   const colors = {
     primary: "#0a0a0a",
@@ -63,7 +64,7 @@ const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
             testID={options.tabBarTestID}
             onPress={onPress}
             onLongPress={onLongPress}
-            className="flex-1 mx-4 py-1 px-5 flex-row gap-1 text-center justify-center items-center rounded-full bg-neutral-800"
+            className="flex-grow mx-1 justify-around py-1 px-5 flex-row text-nowrap text-center items-center rounded-full bg-neutral-800"
           >
             {Object.keys(item).includes(label.toString()) ? item[label.toString()]({
               size: 14,
