@@ -22,7 +22,6 @@ export async function getUserProfile() {
     const ent = await getEntToken()
     const accToken = await getAccToken()
     const shard = "na"
-    console.log(ent, accToken)
     if (!puuid || !ent || !accToken) return null
     const client = await clientInfo();
     const headers = {

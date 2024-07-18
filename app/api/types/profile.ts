@@ -12,23 +12,27 @@ export type RankData = {
 }
 
 export type PlayerCardData = {
-    uuid: string;
-    displayName: string;
-    isHiddenIfNotOwned: boolean;
-    themeUuid: string | null;
-    displayIcon: string;
-    smallArt: string;
-    wideArt: string;
-    largeArt: string;
-    assetPath: string;
+    data: {
+        uuid: string;
+        displayName: string;
+        isHiddenIfNotOwned: boolean;
+        themeUuid: string | null;
+        displayIcon: string;
+        smallArt: string;
+        wideArt: string;
+        largeArt: string;
+        assetPath: string;
+    }
 }
 
 export type PlayerTitleData = {
-    uuid: string;
-    displayName: string;
-    titleText: string;
-    isHiddenIfNotOwned: boolean;
-    assetPath: string;
+    data: {
+        uuid: string;
+        displayName: string;
+        titleText: string;
+        isHiddenIfNotOwned: boolean;
+        assetPath: string;
+    }
 }
 
 export type PlayerProfile = {

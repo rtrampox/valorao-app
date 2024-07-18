@@ -3,7 +3,10 @@ import { cacheStorefront } from "../../api/services/storefront";
 import { useEffect, useState } from "react";
 import notifee, { AndroidImportance } from '@notifee/react-native'
 import messaging, { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
-import { Loading } from "~/components/loading";
+import Skeleton from "react-native-reanimated-skeleton";
+import { LinearGradient } from 'expo-linear-gradient';
+import { Clock } from "lucide-react-native";
+import CountdownPage from "~/components/countdown";
 
 type DataBody = {
     title: string;
@@ -12,6 +15,10 @@ type DataBody = {
         displayIcon: string;
         displayName: string;
         cost: number;
+        contentTierData: any;
+        contentTier: string;
+        theme: string;
+        raw: any;
     }[];
 };
 
@@ -43,7 +50,6 @@ export default function Storefront() {
     async function onAppBootstrap() {
         await messaging().registerDeviceForRemoteMessages()
         const token = await messaging().getToken()
-        console.log(token)
     }
 
     async function getStorefront() {
@@ -61,7 +67,11 @@ export default function Storefront() {
                 uuid: item.weapon.uuid,
                 displayIcon: item.weapon.chromas[0].displayIcon || item.weapon.displayIcon,
                 displayName: item.weapon.displayName,
+                contentTier: item.weapon.contentTierUuid,
+                contentTierData: item.contentTierData,
+                theme: item.weapon.themeUuid,
                 cost: item.cost,
+                raw: item.weapon,
             });
         });
 
@@ -75,36 +85,67 @@ export default function Storefront() {
         // onAppBootstrap()
     }, []);
 
-    if (isLoading) return <Loading />
-
     return (
-        <View className="gap-40 mx-3 mb-12">
-            <SectionList
-                sections={data}
-                keyExtractor={(item) => item.uuid}
-                contentContainerClassName="gap-2"
-                renderItem={({ item }) => (
-                    <TouchableOpacity>
-                        <View
-                            style={{ justifyContent: 'center', alignItems: 'center', width: '100%', height: 200 }}
-                            className="rounded-lg border border-muted-foreground backdrop-blur-xl"
+        <View className="gap-40 mx-3 mb-12 mt-2">
+            <Skeleton isLoading={isLoading}
+                containerStyle={{ width: "100%", height: "auto", gap: 8 }}
+                boneColor="#333"
+                highlightColor="#444"
+                animationDirection="horizontalRight"
+                layout={[
+                    { key: "storeItem1", justifyContent: 'center', alignItems: 'center', width: '100%', height: 200 },
+                    { key: "storeItem2", justifyContent: 'center', alignItems: 'center', width: '100%', height: 200 },
+                    { key: "storeItem3", justifyContent: 'center', alignItems: 'center', width: '100%', height: 200 },
+                    { key: "storeItem4", justifyContent: 'center', alignItems: 'center', width: '100%', height: 200 },
+
+                ]}
+            >
+                <CountdownPage />
+                <SectionList
+                    sections={data}
+                    keyExtractor={(item) => item.uuid}
+                    contentContainerClassName="gap-2"
+                    renderItem={({ item }) => (
+                        <TouchableOpacity
+                            activeOpacity={0.6}
                         >
-                            <Image
-                                source={{ uri: item.displayIcon || 'defaultURI' }}
-                                style={{ width: 300, height: 250, resizeMode: 'contain' }}
-                            />
-                            <Text className="text-white text-xl absolute bottom-1 left-2">{item.displayName}</Text>
-                            <Text className="text-white text-xl absolute bottom-1 right-2 flex-row gap-3">
-                                <Image
-                                    source={require('../../../assets/valorant/currencies/valorantPointsLargeIcon.png')}
-                                    style={{ width: 17, height: 17, resizeMode: 'contain', marginLeft: 5 }}
+                            <View
+                                style={{
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    width: '100%',
+                                    height: 200,
+                                    backgroundColor: `#${item.contentTierData.highlightColor}`,
+                                }}
+                                className="rounded-lg overflow-hidden"
+                            >
+                                <LinearGradient
+                                    colors={[`#${item.contentTierData.highlightColor}`, 'transparent']}
+                                    dither={true}
+                                    className="absolute top-0 left-0 w-full h-11"
                                 />
-                                {" "}{item.cost}
-                            </Text>
-                        </View>
-                    </TouchableOpacity>
-                )}
-            />
+                                <Image
+                                    source={{ uri: item.contentTierData.displayIcon || 'defaultURI' }}
+                                    style={{ width: "100%", height: "100%", resizeMode: 'contain', position: 'absolute' }}
+                                    className="opacity-30"
+                                />
+                                <Image
+                                    source={{ uri: item.displayIcon || 'defaultURI' }}
+                                    style={{ width: 300, height: 250, resizeMode: 'contain' }}
+                                />
+                                <Text className="text-white text-xl absolute bottom-1 left-2">{item.displayName}</Text>
+                                <Text className="text-white text-xl absolute bottom-1 right-2 flex-row gap-3">
+                                    <Image
+                                        source={require('../../../assets/valorant/currencies/valorantPointsLargeIcon.png')}
+                                        style={{ width: 17, height: 17, resizeMode: 'contain', marginLeft: 5 }}
+                                    />
+                                    {" "}{item.cost}
+                                </Text>
+                            </View>
+                        </TouchableOpacity>
+                    )}
+                />
+            </Skeleton>
         </View>
     );
 }

@@ -25,6 +25,14 @@ export default function Screen() {
     bottomSheetModalRef.current?.expand();
   }, []);
 
+  const uri = {
+    url: 'https://auth.riotgames.com/authorize',
+    redirectUri: 'http://localhost/redirect',
+    clientId: 'riot-client',
+    resposeType: 'token id_token',
+    scope: 'openid link ban lol_region account'
+  }
+
   async function getLoggedInData() {
     const token = await getAccToken()
     const puuid = await getPuuid()
@@ -63,12 +71,12 @@ export default function Screen() {
           enableContentPanningGesture={false}
         >
           <BottomSheetView className='flex-1'>
-            <Text className='text-black p-2 text-center'>Lembre de clicar em "manter conectado", assim não será necessário fazer login novamente.</Text>
+            <Text className='text-black p-2 text-center'>Lembre de clicar em "Manter login", assim não será necessário fazer login novamente.</Text>
             <WebView
               ref={(ref) => (webViewRef = ref)}
-              source={{ uri: 'https://auth.riotgames.com/authorize?redirect_uri=https%3A%2F%2Fplayvalorant.com%2Fopt_in&client_id=play-valorant-web-prod&response_type=token%20id_token&nonce=1&scope=account%20openid' }}
+              source={{ uri: `${uri.url}?client_id=${uri.clientId}&redirect_uri=${uri.redirectUri}&response_type=${uri.resposeType}&nonce=1&scope=${uri.scope}&ui_locales=pt-BR` }}
               onNavigationStateChange={(data) => {
-                data.url.includes('https://playvalorant.com') && parseAuthRedirect(data.url, setIsLoading)
+                data.url.includes(uri.redirectUri) && parseAuthRedirect(data.url, setIsLoading)
               }}
               onError={(error) => console.error(error)}
               renderLoading={() => <Loading />}

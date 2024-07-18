@@ -9,8 +9,8 @@ import { Storefront, CachedStorefront, DetailedWeaponData, StorefrontResponse } 
 
 async function cacheStorefront(): Promise<CachedStorefront | null> {
     try {
-        const existingCache = await getStorefrontFromCache()
-        if (existingCache && !(existingCache.expiry < Date.now())) return existingCache
+        // const existingCache = await getStorefrontFromCache()
+        // if (existingCache && !(existingCache.expiry < Date.now())) return existingCache
         const now = new Date();
         now.setHours(now.getHours() - 3);
         const expiry = now.setHours(21, 0, 0, 0);
@@ -35,14 +35,17 @@ async function cacheStorefront(): Promise<CachedStorefront | null> {
 
         const getWeaponData = await axios.get(`https://valorant-api.com/v1/weapons/skinlevels?language=pt-BR`)
         const detailedWeaponData = await axios.get(`https://valorant-api.com/v1/weapons/skins?language=pt-BR`)
+        const getContentTiers = await axios.get(`https://valorant-api.com/v1/contenttiers?language=pt-BR`)
 
         const detailedData: Storefront[] = getstorefront.data.SkinsPanelLayout.SingleItemStoreOffers.map((item) => {
             const weapon = getWeaponData.data.data.find((weapon: any) => weapon.uuid === item.OfferID)
             const weaponDetailed: DetailedWeaponData = detailedWeaponData.data.data.find((data: DetailedWeaponData) => data.displayName === weapon.displayName)
+            const contentTier = getContentTiers.data.data.find((tier: any) => tier.uuid === weaponDetailed.contentTierUuid)
             const cost = Object.values(item.Cost)[0]
             return {
                 weapon: weaponDetailed,
                 cost,
+                contentTierData: contentTier,
                 item,
             }
         })

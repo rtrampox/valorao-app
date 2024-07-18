@@ -217,6 +217,7 @@ export type StorefrontResponse = {
 
 export type Storefront = {
     weapon: DetailedWeaponData;
+    contentTierData: any;
     cost: number;
     item: {
         OfferID: string;

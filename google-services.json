@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "55457921127",
+    "project_id": "valorao",
+    "storage_bucket": "valorao.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:55457921127:android:139b3df0cf111cbf49fcc2",
+        "android_client_info": {
+          "package_name": "com.valorao.valorao"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA87IlO0tq9ZkLXfa96Qm41lcSy6vWjTbI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

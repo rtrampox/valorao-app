@@ -10,3 +10,8 @@ export async function LogOut() {
     await CookieManager.clearAll()
     await CookieManager.removeSessionCookies()
 }
+
+export async function clearCache() {
+    await AsyncStorage.removeItem("cache/storefront")
+    await AsyncStorage.removeItem("cache/profile")
+}
