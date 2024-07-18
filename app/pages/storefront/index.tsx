@@ -136,7 +136,7 @@ export default function Storefront() {
                                 <Text className="text-white text-xl absolute bottom-1 left-2">{item.displayName}</Text>
                                 <Text className="text-white text-xl absolute bottom-1 right-2 flex-row gap-3">
                                     <Image
-                                        source={require('../../../assets/valorant/currencies/valorantPointsLargeIcon.png')}
+                                        source={require('../../../assets/valorant/currencies/valorantPointsDisplayIcon.png')}
                                         style={{ width: 17, height: 17, resizeMode: 'contain', marginLeft: 5 }}
                                     />
                                     {" "}{item.cost}

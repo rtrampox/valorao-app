@@ -1,4 +1,4 @@
-import { View, Text, Image } from "react-native"
+import { View, Text, Image, TouchableOpacity } from "react-native"
 import { useEffect, useState } from "react"
 import { Button } from "~/components/button"
 import { clearCache, LogOut } from "~/app/api/services/logout"
@@ -6,6 +6,8 @@ import { router } from "expo-router"
 import { getUserProfile } from "~/app/api/services/getProfile"
 import { PlayerProfile } from "~/app/api/types/profile"
 import Skeleton from "react-native-reanimated-skeleton";
+import { Clock, RefreshCw } from "lucide-react-native"
+import { currencies } from "~/assets/valorant/currencies/currencies"
 
 export default function ShowToken() {
     const [isLoggingOut, setIsLoggingOut] = useState(false)
@@ -40,37 +42,91 @@ export default function ShowToken() {
                 ]}
             >
                 {profileData && (
-                    <View className="w-full h-32 bg-slate-900/30 border border-muted-foreground absolute top-2 rounded-lg flex-row gap-2 items-center px-4">
-                        <Image
-                            source={{ uri: profileData.playerCard.data.displayIcon }}
-                            style={{ width: 55, height: 55, resizeMode: 'contain' }}
-                        />
-                        <View className="flex-1 flex-col">
-                            <View className="text-center">
-                                <Text className="text-white text-base font-semibold">{profileData.playerName}</Text>
-                                <Text className="text-muted-foreground text-sm">{profileData.playerTitle.data.titleText}</Text>
-                            </View>
-                            <View className="flex-row gap-1">
+                    <View className="items-center justify-center absolute top-2 w-full gap-3">
+                        <View className="w-full h-32 bg-slate-900/30 border border-muted-foreground justify-between rounded-lg flex-row gap-2 px-4">
+                            <View className="flex-row gap-2 items-center">
                                 <Image
-                                    source={{ uri: profileData.playerRank.largeIcon }}
-                                    style={{ width: 20, height: 20, resizeMode: 'contain' }}
+                                    source={{ uri: profileData.playerCard.data.displayIcon }}
+                                    style={{ width: 55, height: 55, resizeMode: 'contain' }}
                                 />
-                                <Text className="text-white capitalize">{profileData.playerRank.tierName.toLowerCase()}</Text>
+
+                                <View className="flex-col">
+                                    <View className="text-center">
+                                        <Text className="text-white text-base font-semibold">{profileData.playerName}</Text>
+                                        <Text className="text-muted-foreground text-sm">{profileData.playerTitle.data.titleText}</Text>
+                                    </View>
+                                    <View className="flex-row gap-1">
+                                        <Image
+                                            source={{ uri: profileData.playerRank.largeIcon }}
+                                            style={{ width: 20, height: 20, resizeMode: 'contain' }}
+                                        />
+                                        <Text className="text-white capitalize">{profileData.playerRank.tierName.toLowerCase()}</Text>
+                                    </View>
+                                </View>
                             </View>
+                            <View className="bg-muted-foreground w-[1px] h-full" />
+
+                            <View className="text-end items-center justify-center mr-5">
+                                <View className="flex-col gap-2">
+                                    <View className="text-end">
+                                        <View className="flex-row gap-1 items-center">
+                                            {currencies[Object.keys(profileData.playerWallet.Balances)[0]]()}
+                                            <Text className="text-white text-end font-semibold">
+                                                {profileData.playerWallet.Balances[Object.keys(profileData.playerWallet.Balances)[0]]}
+                                            </Text>
+                                        </View>
+                                        <View className="flex-row gap-1 items-center">
+                                            {currencies[Object.keys(profileData.playerWallet.Balances)[1]]()}
+                                            <Text className="text-white text-end font-semibold">
+                                                {profileData.playerWallet.Balances[Object.keys(profileData.playerWallet.Balances)[1]]}
+                                            </Text>
+                                        </View>
+                                        <View className="flex-row gap-1 items-center">
+                                            {currencies[Object.keys(profileData.playerWallet.Balances)[2]]()}
+                                            <Text className="text-white text-end font-semibold">
+                                                {profileData.playerWallet.Balances[Object.keys(profileData.playerWallet.Balances)[2]]}
+                                            </Text>
+                                        </View>
+                                    </View>
+                                </View>
+                            </View>
+
+                        </View>
+
+                        <View className='flex-row gap-2 items-center justify-center'>
+                            <View className='flex-row gap-2 items-center justify-center'>
+                                <View className='flex-row items-center justify-center bg-neutral-800 rounded-full p-3'>
+                                    <Clock size={15} color={"white"} />
+                                    <Text className="text-white items-center text-center">{" "}Últimas partidas:{" "}</Text>
+                                </View>
+                            </View>
+                            <TouchableOpacity
+                                activeOpacity={0.8}
+                                className='size-12 items-center justify-center p-3 bg-neutral-800 rounded-full'
+                            >
+                                <RefreshCw size={15} color={"white"} />
+                            </TouchableOpacity>
+                        </View>
+                        <View className="flex-1 justify-center items-center text-center">
+                            <Text className="text-muted-foreground text-2xl">Indisponível</Text>
                         </View>
                     </View>
                 )}
             </Skeleton>
             <View className="w-full absolute bottom-2 gap-4">
-                <Button
-                    onPress={() => clearCache()}
-                    variant="outline"
-                    isLoading={isLoggingOut}
-                >
-                    <Button.Title className="text-white">
-                        Limpar Cache
-                    </Button.Title>
-                </Button>
+                <View>
+                    <Button
+                        onPress={() => clearCache()}
+                        variant="outline"
+                        isLoading={isLoggingOut}
+                        className="flex-col"
+                    >
+                        <Button.Title className="text-white">
+                            Limpar Cache
+                        </Button.Title>
+                    </Button>
+                    <Text className="text-muted-foreground text-sm text-center">O aplicativo deve ser reiniciado para fazer efeito.</Text>
+                </View>
                 <Button
                     onPress={() => logout()}
                     variant="destructive-outlined"
