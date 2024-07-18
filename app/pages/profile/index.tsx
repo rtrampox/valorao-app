@@ -7,15 +7,20 @@ import { getUserProfile } from "~/app/api/services/getProfile"
 import { PlayerProfile } from "~/app/api/types/profile"
 import Skeleton from "react-native-reanimated-skeleton";
 import { Clock, RefreshCw } from "lucide-react-native"
-import { currencies } from "~/assets/valorant/currencies/currencies"
+import { currencies } from "~/app/assets/valorant/currencies/currencies"
+import { getUserLastMatches } from "~/app/api/services/getUserLastMatches"
+import { MatchDetailsResponse } from "~/app/api/types/matches"
 
 export default function ShowToken() {
     const [isLoggingOut, setIsLoggingOut] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
     const [profileData, setProfileData] = useState<PlayerProfile | null>(null)
+    const [lastMatches, setLastMatches] = useState<MatchDetailsResponse[] | null>(null)
 
     async function getProfile() {
         const profile = await getUserProfile()
+        const lastMatches = await getUserLastMatches()
+        setLastMatches(lastMatches)
         setProfileData(profile)
         setIsLoading(false)
     }
@@ -114,19 +119,33 @@ export default function ShowToken() {
                 )}
             </Skeleton>
             <View className="w-full absolute bottom-2 gap-4">
+                {profileData?.playerName === "OPULENCE#RENY" &&
+                    <View className="text-center w-full gap-2">
+                        <Text className="text-muted-foreground text-center">Somente para desenvolvedores:</Text>
+                        <Button
+                            onPress={() => router.push('/_sitemap')}
+                            variant="outline"
+                            className="flex-col"
+                        >
+                            <Button.Title className="text-white">
+                                Mapa do Site
+                            </Button.Title>
+                        </Button>
+                    </View>
+                }
+                <Button
+                    onPress={() => clearCache()}
+                    variant="outline"
+                    className="flex-col"
+                >
+                    <Button.Title className="text-white">
+                        Limpar Cache
+                    </Button.Title>
+                </Button>
                 <View>
-                    <Button
-                        onPress={() => clearCache()}
-                        variant="outline"
-                        isLoading={isLoggingOut}
-                        className="flex-col"
-                    >
-                        <Button.Title className="text-white">
-                            Limpar Cache
-                        </Button.Title>
-                    </Button>
                     <Text className="text-muted-foreground text-sm text-center">O aplicativo deve ser reiniciado para fazer efeito.</Text>
                 </View>
+                <View className="h-[1px] bg-muted-foreground" />
                 <Button
                     onPress={() => logout()}
                     variant="destructive-outlined"

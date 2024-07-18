@@ -16,11 +16,12 @@ import {
 } from "../types/profile";
 
 export async function getUserProfile() {
-    const existingCache = await getProfileFromCache()
-    if (existingCache) return existingCache
+    // const existingCache = await getProfileFromCache()
+    // if (existingCache) return existingCache
     const puuid = await getPuuid()
     const ent = await getEntToken()
     const accToken = await getAccToken()
+    console.log(ent, accToken)
     const shard = "na"
     if (!puuid || !ent || !accToken) return null
     const client = await clientInfo();
