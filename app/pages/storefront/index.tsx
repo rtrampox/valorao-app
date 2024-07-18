@@ -87,7 +87,7 @@ export default function Storefront() {
     return (
         <View className="gap-40 mx-3 mt-2">
             <Skeleton isLoading={isLoading}
-                containerStyle={{ width: "100%", height: "auto", gap: 8, marginBottom: 170 }}
+                containerStyle={{ width: "100%", height: "auto", gap: 8, marginBottom: 178 }}
                 boneColor="#333"
                 highlightColor="#444"
                 animationDirection="horizontalRight"
@@ -102,12 +102,13 @@ export default function Storefront() {
             >
                 <CountdownPage />
                 <SectionList
+                    showsVerticalScrollIndicator={false}
                     sections={data}
                     keyExtractor={(item) => item.uuid}
                     contentContainerClassName="gap-1.5"
                     renderItem={({ item }) => (
                         <TouchableOpacity
-                            activeOpacity={0.6}
+                            activeOpacity={0.8}
                         >
                             <View
                                 style={{

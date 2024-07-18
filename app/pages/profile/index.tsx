@@ -36,7 +36,7 @@ export default function ShowToken() {
     }, [])
 
     return (
-        <View className="flex-col flex-1 justify-center items-center gap-3 bg-background mb-12 px-5">
+        <View className="flex-col flex-1 justify-center items-center gap-3 bg-background mb-16 px-5">
             <Skeleton isLoading={isLoading}
                 containerStyle={{ width: "100%", height: 128, position: "absolute", top: 8 }}
                 boneColor="#333"

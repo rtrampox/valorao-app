@@ -8,24 +8,17 @@ import { Platform } from "react-native";
 import { NAV_THEME } from "~/lib/constants";
 import { useColorScheme } from "~/lib/useColorScheme";
 import { PortalHost } from "@rn-primitives/portal";
-import { SafeAreaView } from "react-native-safe-area-context";
 import TabBar from "~/components/tabBar";
 
-const LIGHT_THEME: Theme = {
-    dark: false,
-    colors: NAV_THEME.light,
-};
 const DARK_THEME: Theme = {
     dark: true,
     colors: NAV_THEME.dark,
 };
 
 export {
-    // Catch any errors thrown by the Layout component.
     ErrorBoundary,
 } from "expo-router";
 
-// Prevent the splash screen from auto-hiding before getting the color scheme.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -61,7 +54,7 @@ export default function RootLayout() {
     }
 
     return (
-        <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
+        <ThemeProvider value={DARK_THEME}>
             <StatusBar style="light" backgroundColor="#000000" />
             <Tabs
                 screenOptions={{ headerShown: false }}

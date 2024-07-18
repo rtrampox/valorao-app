@@ -17,7 +17,7 @@ const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
   }
 
   return (
-    <View className="flex-row justify-between gap-1 bg-neutral-950 items-center py-2 absolute bottom-0 rounded-t-2xl border-t border-gray-900 shadow-black shadow-xl"
+    <View className="flex-row justify-between gap-1 bg-neutral-800 mx-2 items-center py-2 px-2 absolute bottom-2 rounded-full shadow-black shadow-xl"
     >
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
@@ -49,12 +49,6 @@ const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
           }
         };
 
-        const onLongPress = () => {
-          navigation.emit({
-            type: "tabLongPress",
-            target: route.key,
-          });
-        };
         return (
           <TouchableOpacity
             key={route.name}
@@ -63,8 +57,8 @@ const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
             accessibilityLabel={options.tabBarAccessibilityLabel}
             testID={options.tabBarTestID}
             onPress={onPress}
-            onLongPress={onLongPress}
-            className="flex-grow mx-1 justify-around py-1 px-5 flex-row text-nowrap text-center items-center rounded-full bg-neutral-800"
+            activeOpacity={0.6}
+            className="flex-grow justify-around py-1.5 px-5 flex-row text-nowrap text-center items-center rounded-full bg-neutral-900"
           >
             {Object.keys(item).includes(label.toString()) ? item[label.toString()]({
               size: 14,
