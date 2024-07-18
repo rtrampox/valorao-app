@@ -21,7 +21,7 @@ async function cacheStorefront(): Promise<CachedStorefront | null> {
         const client = await clientInfo();
 
         if (!access_token || !entitlements || !puuid || access_token.expiry < Date.now()) {
-            router.replace("/tabs/storefront");
+            router.replace("/");
             return null;
         }
 

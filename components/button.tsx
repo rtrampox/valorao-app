@@ -8,7 +8,7 @@ import {
 } from "react-native"
 import clsx from "clsx"
 
-type Variants = "primary" | "secondary"
+type Variants = "primary" | "secondary" | "destructive" | "destructive-outlined"
 
 type ButtonProps = TouchableOpacityProps & {
     variant?: Variants
@@ -31,6 +31,8 @@ function Button({
                 {
                     "bg-lime-300": variant === "primary",
                     "bg-zinc-800": variant === "secondary",
+                    "bg-red-700": variant === "destructive",
+                    "bg-red-700/10 border border-red-700": variant === "destructive-outlined",
                 },
                 className
             )}
