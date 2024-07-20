@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export async function storeNotificationToken(puuid: string, token: string) {
     const findExisting = await firestore().collection('Users').where('puuid', '==', puuid).get({ source: 'server' })
-    if (findExisting.docs) {
+    if (!findExisting.docs) {
         const notificationCollection = await firestore().collection('Users').add({
             puuid,
             token,
