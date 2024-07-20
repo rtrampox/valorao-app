@@ -6,6 +6,8 @@ import messaging, { FirebaseMessagingTypes } from '@react-native-firebase/messag
 import Skeleton from "react-native-reanimated-skeleton";
 import { LinearGradient } from 'expo-linear-gradient';
 import CountdownPage from "~/components/countdown";
+import { getNotificationTokenLocal, storeNotificationToken } from "~/app/api/services/storeNotificationToken";
+import { getPuuid } from "~/app/api/services/storePuuid";
 
 type DataBody = {
     title: string;
@@ -24,15 +26,15 @@ type DataBody = {
 export default function Storefront() {
     const [data, setData] = useState<DataBody[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    notifee.requestPermission();
 
     async function displayNotification(message: FirebaseMessagingTypes.RemoteMessage) {
-        await notifee.requestPermission();
 
         const channelId = await notifee.createChannel({
             id: "default",
             name: "Default Channel",
             vibration: true,
-            importance: AndroidImportance.HIGH,
+            importance: AndroidImportance.DEFAULT,
         })
 
         await notifee.displayNotification({
@@ -49,6 +51,11 @@ export default function Storefront() {
     async function onAppBootstrap() {
         await messaging().registerDeviceForRemoteMessages()
         const token = await messaging().getToken()
+        const puuid = await getPuuid()
+        const findToken = await getNotificationTokenLocal()
+        if (!findToken) {
+            await storeNotificationToken(puuid as string, token)
+        }
     }
 
     async function getStorefront() {
@@ -81,7 +88,7 @@ export default function Storefront() {
 
     useEffect(() => {
         getStorefront()
-        // onAppBootstrap()
+        onAppBootstrap()
     }, []);
 
     return (
