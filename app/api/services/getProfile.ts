@@ -47,16 +47,18 @@ export async function getUserProfile() {
     const getMMRRankData = await axios.get(`https://valorant-api.com/v1/competitivetiers?language=pt-BR`)
     const getBannerData = await axios.get<PlayerCardData>(`https://valorant-api.com/v1/playercards/${getProfileBanner.data.Identity.PlayerCardID}?language=pt-BR`)
     const getTitleData = await axios.get<PlayerTitleData>(`https://valorant-api.com/v1/playertitles/${getProfileBanner.data.Identity.PlayerTitleID}?language=pt-BR`)
+        .catch((err) => { return null })
+
     const playerName = `${getProfile.data[0].GameName}#${getProfile.data[0].TagLine}`
-    const lastPlayedSeasonID = Object.keys(getMMR.data.QueueSkills.competitive.SeasonalInfoBySeasonID)[0]
-    const playerRank = getMMR.data.QueueSkills.competitive.SeasonalInfoBySeasonID[lastPlayedSeasonID].CompetitiveTier
+    const lastPlayedSeasonID = getMMR.data.QueueSkills.competitive.SeasonalInfoBySeasonID ? Object.keys(getMMR.data.QueueSkills.competitive.SeasonalInfoBySeasonID)[0] : null;
+    const playerRank = lastPlayedSeasonID ? getMMR.data.QueueSkills.competitive.SeasonalInfoBySeasonID[lastPlayedSeasonID].CompetitiveTier : 0;
     const playerRankData: RankData = getMMRRankData.data.data[getMMRRankData.data.data.length - 1].tiers.find((rank: any) => rank.tier === playerRank)
     const body: PlayerProfile = {
         playerName,
         playerLevel: getProfileBanner.data.Identity.AccountLevel,
         playerRank: playerRankData,
         playerCard: getBannerData.data,
-        playerTitle: getTitleData.data,
+        playerTitle: getTitleData?.data ? getTitleData.data : null,
         playerWallet: getWallet.data,
     }
     await AsyncStorage.setItem("cache/profile", JSON.stringify(body))

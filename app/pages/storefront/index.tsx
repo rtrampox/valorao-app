@@ -1,4 +1,4 @@
-import { View, Image, SectionList, Text, TouchableOpacity } from "react-native";
+import { View, Image, SectionList, Text, TouchableOpacity, ScrollView } from "react-native";
 import { cacheStorefront } from "../../api/services/storefront";
 import { useEffect, useState } from "react";
 import notifee, { AndroidImportance } from '@notifee/react-native'
@@ -8,6 +8,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import CountdownPage from "~/components/countdown";
 import { getNotificationTokenLocal, storeNotificationToken } from "~/app/api/services/storeNotificationToken";
 import { getPuuid } from "~/app/api/services/storePuuid";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type DataBody = {
     title: string;
@@ -26,7 +27,14 @@ type DataBody = {
 export default function Storefront() {
     const [data, setData] = useState<DataBody[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-    notifee.requestPermission();
+
+    async function requestAccess() {
+        const getState = await AsyncStorage.getItem('user/permissions/notification')
+        if (getState && getState === 'false') return
+        const perm = await notifee.requestPermission();
+        if (perm.authorizationStatus === 0) return await AsyncStorage.setItem('user/permissions/notification', 'false')
+        if (perm.authorizationStatus === 1) return await AsyncStorage.setItem('user/permissions/notification', 'true')
+    }
 
     async function displayNotification(message: FirebaseMessagingTypes.RemoteMessage) {
 
@@ -87,14 +95,15 @@ export default function Storefront() {
     }
 
     useEffect(() => {
+        requestAccess()
         getStorefront()
         onAppBootstrap()
     }, []);
 
     return (
-        <View className="gap-40 mx-3 mt-2">
+        <View className="mx-3 mt-2">
             <Skeleton isLoading={isLoading}
-                containerStyle={{ width: "100%", height: "auto", gap: 8, marginBottom: 178 }}
+                containerStyle={{ width: "100%", height: "auto", gap: 8, marginBottom: 60 }}
                 boneColor="#333"
                 highlightColor="#444"
                 animationDirection="horizontalRight"
@@ -108,51 +117,62 @@ export default function Storefront() {
                 ]}
             >
                 <CountdownPage />
-                <SectionList
-                    showsVerticalScrollIndicator={false}
-                    sections={data}
-                    keyExtractor={(item) => item.uuid}
-                    contentContainerClassName="gap-1.5"
-                    renderItem={({ item }) => (
-                        <TouchableOpacity
-                            activeOpacity={0.8}
-                        >
-                            <View
-                                style={{
-                                    justifyContent: 'center',
-                                    alignItems: 'center',
-                                    width: '100%',
-                                    height: 200,
-                                    backgroundColor: `#${item.contentTierData.highlightColor}`,
-                                }}
-                                className="rounded-lg overflow-hidden"
-                            >
-                                <LinearGradient
-                                    colors={[`#${item.contentTierData.highlightColor}`, 'transparent']}
-                                    dither={true}
-                                    className="absolute top-0 left-0 w-full h-11"
-                                />
-                                <Image
-                                    source={{ uri: item.contentTierData.displayIcon || 'defaultURI' }}
-                                    style={{ width: "100%", height: "100%", resizeMode: 'contain', position: 'absolute' }}
-                                    className="opacity-30"
-                                />
-                                <Image
-                                    source={{ uri: item.displayIcon || 'defaultURI' }}
-                                    style={{ width: 300, height: 250, resizeMode: 'contain' }}
-                                />
-                                <Text className="text-white text-xl absolute bottom-1 left-2">{item.displayName}</Text>
-                                <Text className="text-white text-xl absolute bottom-1 right-2 flex-row gap-3">
-                                    <Image
-                                        source={require('../../assets/valorant/currencies/valorantPointsDisplayIcon.png')}
-                                        style={{ width: 17, height: 17, resizeMode: 'contain', marginLeft: 5 }}
-                                    />
-                                    {" "}{item.cost}
-                                </Text>
-                            </View>
-                        </TouchableOpacity>
-                    )}
-                />
+                <ScrollView className="mt-2">
+                    <View style={{ minHeight: 975 }}>
+                        {data.map((item) => {
+                            return item.data.map((data) => {
+                                return (
+                                    <View style={{ marginBottom: 13 }} key={data.uuid}>
+                                        <TouchableOpacity
+                                            activeOpacity={0.8}
+                                            style={{ gap: 6 }}
+                                        >
+                                            <View
+                                                style={{
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                    width: "auto",
+                                                    height: 200,
+                                                    backgroundColor: `#${data.contentTierData.highlightColor}`,
+                                                }}
+                                                className="rounded-lg overflow-hidden"
+                                            >
+                                                <LinearGradient
+                                                    colors={[`#${data.contentTierData.highlightColor}`, 'transparent']}
+                                                    dither={true}
+                                                    className="absolute top-0 left-0 w-full h-11"
+                                                />
+                                                <Image
+                                                    source={{ uri: data.contentTierData.displayIcon || 'defaultURI' }}
+                                                    style={{ width: "100%", height: "100%", resizeMode: 'contain', position: 'absolute' }}
+                                                    className="opacity-30"
+                                                />
+                                                <Image
+                                                    source={{ uri: data.displayIcon || 'defaultURI' }}
+                                                    style={{ width: 300, height: 250, resizeMode: 'contain' }}
+                                                />
+                                                <Text className="text-white text-xl absolute bottom-1 left-3">
+                                                    {data.displayName}{" "}
+                                                    <Image
+                                                        source={{ uri: data.contentTierData.displayIcon || 'defaultURI' }}
+                                                        style={{ width: 17, height: 17, resizeMode: 'contain', marginLeft: 5 }}
+                                                    />
+                                                </Text>
+                                                <Text className="text-white text-xl absolute bottom-1 right-3 flex-row gap-3">
+                                                    <Image
+                                                        source={require('../../assets/valorant/currencies/valorantPointsDisplayIcon.png')}
+                                                        style={{ width: 17, height: 17, resizeMode: 'contain', marginLeft: 5 }}
+                                                    />
+                                                    {" "}{data.cost}
+                                                </Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    </View>
+                                )
+                            })
+                        })}
+                    </View>
+                </ScrollView>
             </Skeleton>
         </View>
     );

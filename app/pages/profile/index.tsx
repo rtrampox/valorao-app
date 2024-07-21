@@ -1,21 +1,22 @@
 import { View, Text, Image, TouchableOpacity } from "react-native"
-import { useEffect, useState } from "react"
-import { Button } from "~/components/button"
-import { clearCache, LogOut } from "~/app/api/services/logout"
-import { router } from "expo-router"
+import { useEffect, useRef, useState } from "react"
 import { getUserProfile } from "~/app/api/services/getProfile"
 import { PlayerProfile } from "~/app/api/types/profile"
-import Skeleton from "react-native-reanimated-skeleton";
+import Skeleton from "react-native-reanimated-skeleton"
 import { Clock, RefreshCw } from "lucide-react-native"
 import { currencies } from "~/app/assets/valorant/currencies/currencies"
 import { getUserLastMatches } from "~/app/api/services/getUserLastMatches"
 import { MatchDetailsResponse } from "~/app/api/types/matches"
+import BottomSheet from "@gorhom/bottom-sheet"
+import { OptionsSheet } from "./components/optionsSheet"
 
 export default function ShowToken() {
     const [isLoggingOut, setIsLoggingOut] = useState(false)
     const [isLoading, setIsLoading] = useState(true)
     const [profileData, setProfileData] = useState<PlayerProfile | null>(null)
     const [lastMatches, setLastMatches] = useState<MatchDetailsResponse[] | null>(null)
+
+    const bottomSheetRef = useRef<BottomSheet>(null);
 
     async function getProfile() {
         const profile = await getUserProfile()
@@ -24,25 +25,21 @@ export default function ShowToken() {
         setProfileData(profile)
         setIsLoading(false)
     }
-    async function logout() {
-        setIsLoggingOut(true)
-        await LogOut()
-        setIsLoggingOut(false)
-        router.replace("/")
-    }
 
     useEffect(() => {
         getProfile()
     }, [])
 
     return (
-        <View className="flex-col flex-1 justify-center items-center gap-3 bg-background mb-16 px-5">
+        <View className="flex-col flex-1 justify-center items-center gap-3 bg-background mb-14 px-5">
             <Skeleton isLoading={isLoading}
                 containerStyle={{ width: "100%", height: 128, position: "absolute", top: 8 }}
                 boneColor="#333"
                 highlightColor="#444"
                 animationDirection="horizontalRight"
                 layout={[
+                    { key: "viewBox", width: "auto", height: 128, marginBottom: 6 },
+                    { key: "viewBox", width: "auto", height: 128, marginBottom: 6 },
                     { key: "viewBox", width: "auto", height: 128, marginBottom: 6 },
                 ]}
             >
@@ -58,17 +55,18 @@ export default function ShowToken() {
                                 <View className="flex-col">
                                     <View className="text-center">
                                         <Text className="text-white text-base font-semibold">{profileData.playerName}</Text>
-                                        <Text className="text-muted-foreground text-sm">{profileData.playerTitle.data.titleText}</Text>
+                                        {profileData.playerTitle !== null && <Text className="text-muted-foreground text-sm">{profileData.playerTitle.data ? profileData.playerTitle.data.titleText : ""}</Text>}
                                     </View>
                                     <View className="flex-row gap-1">
                                         <Image
-                                            source={{ uri: profileData.playerRank.largeIcon }}
+                                            source={{ uri: profileData.playerRank.smallIcon }}
                                             style={{ width: 20, height: 20, resizeMode: 'contain' }}
                                         />
                                         <Text className="text-white capitalize">{profileData.playerRank.tierName.toLowerCase()}</Text>
                                     </View>
                                 </View>
                             </View>
+
                             <View className="bg-muted-foreground w-[1px] h-full" />
 
                             <View className="text-end items-center justify-center mr-5">
@@ -95,7 +93,6 @@ export default function ShowToken() {
                                     </View>
                                 </View>
                             </View>
-
                         </View>
 
                         <View className='flex-row gap-2 items-center justify-center'>
@@ -118,44 +115,14 @@ export default function ShowToken() {
                     </View>
                 )}
             </Skeleton>
-            <View className="w-full absolute bottom-2 gap-4">
-                {profileData?.playerName === "OPULENCE#RENY" &&
-                    <View className="text-center w-full gap-2">
-                        <Text className="text-muted-foreground text-center">Somente para desenvolvedores:</Text>
-                        <Button
-                            onPress={() => router.push('/_sitemap')}
-                            variant="outline"
-                            className="flex-col"
-                        >
-                            <Button.Title className="text-white">
-                                Mapa do Site
-                            </Button.Title>
-                        </Button>
-                    </View>
-                }
-                <Button
-                    onPress={() => clearCache()}
-                    variant="outline"
-                    className="flex-col"
-                >
-                    <Button.Title className="text-white">
-                        Limpar Cache
-                    </Button.Title>
-                </Button>
-                <View>
-                    <Text className="text-muted-foreground text-sm text-center">O aplicativo deve ser reiniciado para fazer efeito.</Text>
-                </View>
-                <View className="h-[1px] bg-muted-foreground" />
-                <Button
-                    onPress={() => logout()}
-                    variant="destructive-outlined"
-                    isLoading={isLoggingOut}
-                >
-                    <Button.Title className="text-white">
-                        Sair
-                    </Button.Title>
-                </Button>
-            </View>
+
+            <OptionsSheet
+                bottomSheetRef={bottomSheetRef}
+                isLoggingOut={isLoggingOut}
+                profileData={profileData}
+                setIsLoggingOut={setIsLoggingOut}
+            />
+
         </View>
     )
 }

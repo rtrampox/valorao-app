@@ -59,6 +59,7 @@ export default function RootLayout() {
             <Tabs
                 screenOptions={{ headerShown: false }}
                 tabBar={(props) => <TabBar {...props} />}
+                backBehavior="history"
             >
                 <Tabs.Screen name="storefront/index" options={{ title: "Loja" }} />
                 <Tabs.Screen name="nightmarket/index" options={{ title: "Mercado Noturno" }} />

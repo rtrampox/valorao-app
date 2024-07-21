@@ -1,10 +1,12 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import { BottomTabBarProps } from "@react-navigation/bottom-tabs";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Ban, CircleDollarSignIcon, LucideProps, ShoppingCart, User } from "lucide-react-native";
 import * as NavigationBar from 'expo-navigation-bar';
 
 const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
+
+  const [pageTitle, setPageTitle] = useState<Number>()
   const item: { [key: string]: (props: LucideProps) => JSX.Element } = {
     Loja: (props: LucideProps) => <ShoppingCart {...props} />,
     Perfil: (props: LucideProps) => <User {...props} />,
@@ -17,7 +19,7 @@ const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
   }
 
   return (
-    <View className="flex-row justify-between gap-1 bg-neutral-800 mx-2 items-center py-2 px-2 absolute bottom-2 rounded-full shadow-black shadow-xl"
+    <View className={`flex-row justify-between gap-1 bg-neutral-800 mx-2 items-center py-2 px-2 absolute bottom-2 ${pageTitle === 2 ? "rounded-b-3xl" : "rounded-full shadow-black shadow-xl"}`}
     >
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
@@ -30,9 +32,14 @@ const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
         if (
           [
             "showToken/index",
+            "profile/tab/index"
           ].includes(route.name)
         )
           return null;
+
+        useEffect(() => {
+          setPageTitle(state.index)
+        }, [state.index])
 
         const isFocused = state.index === index;
         { NavigationBar.setBackgroundColorAsync(colors.primary) }

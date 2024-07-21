@@ -8,7 +8,7 @@ import {
 } from "react-native"
 import clsx from "clsx"
 
-type Variants = "primary" | "secondary" | "destructive" | "destructive-outlined" | "outline"
+type Variants = "primary" | "secondary" | "destructive" | "destructive-outlined" | "outline" | "outline-dark"
 
 type ButtonProps = TouchableOpacityProps & {
     variant?: Variants
@@ -34,6 +34,7 @@ function Button({
                     "bg-red-700/75": variant === "destructive",
                     "bg-red-700/10 border border-red-700": variant === "destructive-outlined",
                     "bg-zinc-800/10 border border-zinc-800": variant === "outline",
+                    "bg-neutral-900/20 border border-neutral-900": variant === "outline-dark",
                 },
                 className
             )}
@@ -56,7 +57,7 @@ function Title({ children }: TextProps) {
             className={clsx("text-base font-semibold", {
                 "text-lime-950": variant === "primary",
                 "text-zinc-200": variant === "secondary",
-                "text-zinc-200 text-center": variant === "destructive" || variant === "destructive-outlined",
+                "text-zinc-200 text-center": variant === "destructive" || variant === "destructive-outlined" || variant === "outline-dark",
                 "text-zinc-300": variant === "outline",
             })}
         >

@@ -27,12 +27,12 @@ export type PlayerCardData = {
 
 export type PlayerTitleData = {
     data: {
-        uuid: string;
-        displayName: string;
-        titleText: string;
-        isHiddenIfNotOwned: boolean;
-        assetPath: string;
-    }
+        uuid: string | null;
+        displayName: string | null;
+        titleText: string | null;
+        isHiddenIfNotOwned: boolean | null;
+        assetPath: string | null;
+    } | undefined
 }
 
 export type PlayerProfile = {
@@ -40,7 +40,7 @@ export type PlayerProfile = {
     playerLevel: number;
     playerRank: RankData;
     playerCard: PlayerCardData;
-    playerTitle: PlayerTitleData;
+    playerTitle: PlayerTitleData | null;
     playerWallet: WalletResponse;
 }
 
