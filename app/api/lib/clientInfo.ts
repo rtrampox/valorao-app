@@ -1,5 +1,4 @@
 import axios from "axios";
-import { version } from "react";
 
 interface ClientInfoGETResponse {
 	status: number;
@@ -23,8 +22,8 @@ const clientInfo = async () => {
 		"https://valorant-api.com/v1/version",
 	);
 	return {
-		version: data.data.version,
-		build: data.data.riotClientVersion,
+		version: data.data.riotClientVersion,
+		build: data.data.riotClientBuild,
 		platform: clientPlatform,
 	};
 };

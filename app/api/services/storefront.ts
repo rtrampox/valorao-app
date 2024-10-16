@@ -96,7 +96,6 @@ async function cacheStorefront(): Promise<CachedStorefront | null> {
 			console.error("request: ", error.request);
 			console.error("response: ", error.response?.data);
 		}
-		console.log(error);
 		return null;
 	}
 }
