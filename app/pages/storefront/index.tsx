@@ -30,9 +30,11 @@ type DataBody = {
 		displayIcon: string;
 		displayName: string;
 		cost: number;
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 		contentTierData: any;
 		contentTier: string;
 		theme: string;
+		// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 		raw: any;
 	}[];
 };
