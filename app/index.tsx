@@ -1,6 +1,6 @@
 import * as React from "react";
 import { View } from "react-native";
-import { Text } from "~/components/ui/text";
+import { Text } from "~/components/components/ui/text";
 import { WebView } from "react-native-webview";
 import CookieManager from "@react-native-cookies/cookies";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
@@ -51,27 +51,27 @@ export default function Screen() {
 		scope: "openid link ban lol_region account",
 	};
 
-	React.useEffect(() => {
-		async function getLoggedInData() {
-			const token = await getAccToken();
-			const puuid = await getPuuid();
-			const enttoken = await getEntToken();
-			if (token && !(token.expiry < Date.now()) && puuid && enttoken) {
-				setHasToken(true);
-				return router.replace("/pages/storefront");
-			}
-			setIsLoading(false);
-			return setHasToken(false);
+	async function getLoggedInData() {
+		const token = await getAccToken();
+		const puuid = await getPuuid();
+		const enttoken = await getEntToken();
+		if (token && !(token.expiry < Date.now()) && puuid && enttoken) {
+			setHasToken(true);
+			return router.replace(`/pages/storefront`);
 		}
+		setIsLoading(false);
+		return setHasToken(false);
+	}
+	React.useEffect(() => {
 		getLoggedInData();
 		return () => {
 			webViewRef = null;
 		};
-	}, [webViewRef]);
+	}, []);
 
 	React.useEffect(() => {
 		if (!isLoading) handlePresentModalPress();
-	}, [isLoading, handlePresentModalPress]);
+	}, [isLoading]);
 
 	if (isLoading) return <Loading />;
 	if (!hasToken)
@@ -97,9 +97,7 @@ export default function Screen() {
 								não será necessário fazer login novamente.
 							</Text>
 							<WebView
-								ref={(ref) => {
-									webViewRef = ref;
-								}}
+								ref={(ref) => (webViewRef = ref)}
 								source={{
 									uri: `${uri.url}?client_id=${uri.clientId}&redirect_uri=${uri.redirectUri}&response_type=${uri.resposeType}&nonce=1&scope=${uri.scope}&ui_locales=pt-BR`,
 								}}
@@ -156,7 +154,9 @@ export async function parseAuthRedirect(
 	const jsonPayload = decodeURIComponent(
 		atob(base64)
 			.split("")
-			.map((c) => `%${(`00${c.charCodeAt(0).toString(16)}`).slice(-2)}`)
+			.map(function (c) {
+				return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+			})
 			.join(""),
 	);
 
@@ -167,5 +167,5 @@ export async function parseAuthRedirect(
 	await storePuuid(accessTokenData.sub);
 	await getEntitlements(accessToken);
 	await storeSsidCookie(cookies.ssid.value);
-	return router.replace("/pages/storefront");
+	return router.replace(`/pages/storefront`);
 }

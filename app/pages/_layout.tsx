@@ -45,7 +45,7 @@ export default function RootLayout() {
 		})().finally(() => {
 			SplashScreen.hideAsync();
 		});
-	}, [colorScheme, setColorScheme]);
+	}, []);
 
 	if (!isColorSchemeLoaded) {
 		return null;
