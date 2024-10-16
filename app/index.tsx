@@ -15,23 +15,6 @@ import { storeSsidCookie } from "./api/services/storeSsidCookie";
 import * as Updates from "expo-updates";
 
 export default function Screen() {
-	React.useEffect(() => {
-		async function onFetchUpdateAsync() {
-			try {
-				const update = await Updates.checkForUpdateAsync();
-
-				if (update.isAvailable) {
-					await Updates.fetchUpdateAsync();
-					await Updates.reloadAsync();
-				}
-			} catch (error) {
-				// You can also add an alert() to see the error message in case of an error when fetching updates.
-				alert(`Error fetching latest Expo update: ${error}`);
-			}
-		}
-		onFetchUpdateAsync();
-	}, []);
-
 	const [hasToken, setHasToken] = React.useState(false);
 	const [isLoading, setIsLoading] = React.useState(true);
 	let webViewRef: WebView | null = null;
@@ -52,6 +35,20 @@ export default function Screen() {
 	};
 
 	React.useEffect(() => {
+		async function onFetchUpdateAsync() {
+			try {
+				const update = await Updates.checkForUpdateAsync();
+
+				if (update.isAvailable) {
+					await Updates.fetchUpdateAsync();
+					await Updates.reloadAsync();
+				}
+			} catch (error) {
+				// You can also add an alert() to see the error message in case of an error when fetching updates.
+				alert(`Error fetching latest Expo update: ${error}`);
+			}
+		}
+
 		async function getLoggedInData() {
 			const token = await getAccToken();
 			const puuid = await getPuuid();
@@ -60,6 +57,7 @@ export default function Screen() {
 				setHasToken(true);
 				return router.replace("/pages/storefront");
 			}
+			await onFetchUpdateAsync();
 			setIsLoading(false);
 			return setHasToken(false);
 		}
