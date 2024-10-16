@@ -19,12 +19,25 @@ function detectOSAndRunScript() {
                 console.log('Skipping postinstall script execution.');
             }
         } else {
-            console.log('Detected Unix-like OS (assuming Bash)');
+            console.log('Detected Unix-like OS');
             const shScriptPath = path.join(__dirname, 'postinstall.sh');
-            
-            if (fs.existsSync(shScriptPath)) {
-                // Run shell script
-                execSync(`bash "${shScriptPath}"`, { stdio: 'inherit' });
+            const bashScriptPath = path.join(__dirname, 'postinstall.bash');
+
+            let shellCommand;
+
+            try {
+                execSync('which bash', { stdio: 'ignore' });
+                console.log('Bash detected');
+                shellCommand = 'bash';
+            } catch (error) {
+                console.log('Bash not found, falling back to sh');
+                shellCommand = 'sh';
+            }
+
+            if (shellCommand === 'bash' && fs.existsSync(bashScriptPath)) {
+                execSync(`${shellCommand} "${bashScriptPath}"`, { stdio: 'inherit' });
+            } else if (fs.existsSync(shScriptPath)) {
+                execSync(`${shellCommand} "${shScriptPath}"`, { stdio: 'inherit' });
             } else {
                 console.error(`Shell script not found: ${shScriptPath}`);
                 console.log('Skipping postinstall script execution.');
