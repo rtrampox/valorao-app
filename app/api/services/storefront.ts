@@ -15,10 +15,9 @@ import type {
 async function cacheStorefront(): Promise<CachedStorefront | null> {
 	try {
 		const puuid = await getPuuid();
-		console.log(puuid);
-		// const existingCache = await getStorefrontFromCache();
-		// if (existingCache && !(existingCache.expiry < Date.now()))
-		// 	return existingCache;
+		const existingCache = await getStorefrontFromCache();
+		if (existingCache && !(existingCache.expiry < Date.now()))
+			return existingCache;
 
 		const now = new Date();
 		now.setHours(now.getHours() - 3);
@@ -65,6 +64,7 @@ async function cacheStorefront(): Promise<CachedStorefront | null> {
 		const detailedData: Storefront[] =
 			getstorefront.data.SkinsPanelLayout.SingleItemStoreOffers.map((item) => {
 				const weapon = getWeaponData.data.data.find(
+					// biome-ignore lint/suspicious/noExplicitAny: No type available yet.
 					(weapon: any) => weapon.uuid === item.OfferID,
 				);
 				const weaponDetailed: DetailedWeaponData =
@@ -73,6 +73,7 @@ async function cacheStorefront(): Promise<CachedStorefront | null> {
 							data.displayName === weapon.displayName,
 					);
 				const contentTier = getContentTiers.data.data.find(
+					// biome-ignore lint/suspicious/noExplicitAny: No type available yet.
 					(tier: any) => tier.uuid === weaponDetailed.contentTierUuid,
 				);
 				const cost = Object.values(item.Cost)[0];
@@ -109,7 +110,7 @@ async function getStorefrontFromCache(): Promise<CachedStorefront | null> {
 		}
 		return null;
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		return null;
 	}
 }

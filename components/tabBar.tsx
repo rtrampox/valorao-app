@@ -10,6 +10,12 @@ import {
 } from "lucide-react-native";
 import * as NavigationBar from "expo-navigation-bar";
 
+const excludedTabs: string[] = [
+	"showToken/index",
+	"profile/tab/index",
+	"profile/components/optionsSheet",
+];
+
 const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
 	const [pageTitle, setPageTitle] = useState<number>();
 	const item: { [key: string]: (props: LucideProps) => JSX.Element } = {
@@ -37,8 +43,7 @@ const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {
 						: options.title !== undefined
 							? options.title
 							: route.name;
-				if (["showToken/index", "profile/tab/index"].includes(route.name))
-					return null;
+				if (excludedTabs.includes(route.name)) return null;
 
 				useEffect(() => {
 					setPageTitle(state.index);
