@@ -1,20 +1,32 @@
-import axios from "axios"
-import { version } from "react"
+import axios from "axios";
+import { version } from "react";
 
-const clientPlatform = "ew0KCSJwbGF0Zm9ybVR5cGUiOiAiUEMiLA0KCSJwbGF0Zm9ybU9TIjogIldpbmRvd3MiLA0KCSJwbGF0Zm9ybU9TVmVyc2lvbiI6ICIxMC4wLjE5MDQyLjEuMjU2LjY0Yml0IiwNCgkicGxhdGZvcm1DaGlwc2V0IjogIlVua25vd24iDQp9"
-
-const clientInfo = async () => {
-    const getVersion = await axios.get("https://apis.rtrampox.cloud/v1/val/client/version", {
-        headers: {
-            "x-api-key": "TPX-5DVYTP2VMEHO4Y7FFO854LP2P67G"
-        }
-    })
-    return {
-        version: getVersion.data.version,
-        build: getVersion.data.build,
-        platform: clientPlatform,
-    }
+interface ClientInfoGETResponse {
+	status: number;
+	data: {
+		manifestId: string;
+		branch: string;
+		version: string;
+		buildVersion: string;
+		engineVersion: string;
+		riotClientVersion: string;
+		riotClientBuild: string;
+		buildDate: string;
+	};
 }
 
+const clientPlatform =
+	"ew0KCSJwbGF0Zm9ybVR5cGUiOiAiUEMiLA0KCSJwbGF0Zm9ybU9TIjogIldpbmRvd3MiLA0KCSJwbGF0Zm9ybU9TVmVyc2lvbiI6ICIxMC4wLjE5MDQyLjEuMjU2LjY0Yml0IiwNCgkicGxhdGZvcm1DaGlwc2V0IjogIlVua25vd24iDQp9";
 
-export { clientInfo }
+const clientInfo = async () => {
+	const { data } = await axios.get<ClientInfoGETResponse>(
+		"https://valorant-api.com/v1/version",
+	);
+	return {
+		version: data.data.version,
+		build: data.data.riotClientVersion,
+		platform: clientPlatform,
+	};
+};
+
+export { clientInfo };
