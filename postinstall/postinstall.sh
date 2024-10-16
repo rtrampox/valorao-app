@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 
-if [[ "$(uname)" == "Darwin" ]]; then
+if [ "$(uname)" = "Darwin" ]; then
     echo "Using Mac -i '' separator for sed -i"
     SP=" " # Needed for portability with sed
 else

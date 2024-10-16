@@ -9,7 +9,8 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start -c --web",
-    "build:android": "eas build -p android --profile preview --local",
+    "build:local": "eas build -p android --profile production --local",
+    "build:android": "eas build -p android --profile production",
     "postinstall": "node postinstall/postinstall.js"
   },
   "dependencies": {
