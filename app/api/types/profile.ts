@@ -46,6 +46,7 @@ export type PlayerProfile = {
 	playerTitle: PlayerTitleData | null;
 	playerWallet: WalletResponse;
 	RankedRating: number;
+	exp: number;
 };
 
 export type PlayerLoadoutResponse = {

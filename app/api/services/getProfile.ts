@@ -91,6 +91,7 @@ export async function getUserProfile() {
 		playerTitle: getTitleData?.data ? getTitleData.data : null,
 		playerWallet: getWallet.data,
 		RankedRating: playerRankedRating,
+		exp: Math.floor(Date.now() / 1000) + 3600,
 	};
 	await AsyncStorage.setItem("cache/profile", JSON.stringify(body));
 	return body;
@@ -101,6 +102,10 @@ export async function getProfileFromCache(): Promise<PlayerProfile | null> {
 		const item = await AsyncStorage.getItem("cache/profile");
 		if (item) {
 			const getProfile = JSON.parse(item);
+			const currentTime = Math.floor(Date.now() / 1000);
+			if (getProfile.exp < currentTime) {
+				return null;
+			}
 			return getProfile;
 		}
 		return null;
