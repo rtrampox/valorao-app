@@ -27,7 +27,7 @@ export async function getUserLastMatches(): Promise<
 		Authorization: `Bearer ${accToken.accToken}`,
 	};
 	const getMatches = await axios.get<MatchHistoryResponse>(
-		`https://pd.${shard}.a.pvp.net/match-history/v1/history/${puuid}?startIndex=0&endIndex=3`,
+		`https://pd.${shard}.a.pvp.net/match-history/v1/history/${puuid}?startIndex=0&endIndex=3&queue=competitive`,
 		{ headers: headers },
 	);
 	const getMatchDetails: Promise<MatchDetailsResponse>[] =

@@ -180,7 +180,7 @@ export default function StorefrontPage() {
 				]}
 			>
 				<CountdownPage />
-				<ScrollView className="mt-2">
+				<ScrollView className="mt-2" showsVerticalScrollIndicator={false}>
 					<View style={{ minHeight: 975 }}>
 						{data.map((item) => {
 							return item.data.map((data) => {

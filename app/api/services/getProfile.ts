@@ -1,4 +1,4 @@
-import axios, { type AxiosError } from "axios";
+import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getEntToken } from "../getEntitlements";
 import { getAccToken } from "./storeAccessToken";
@@ -72,18 +72,25 @@ export async function getUserProfile() {
 				lastPlayedSeasonID
 			].CompetitiveTier
 		: 0;
+	const playerRankedRating = lastPlayedSeasonID
+		? getMMR.data.QueueSkills.competitive.SeasonalInfoBySeasonID[
+				lastPlayedSeasonID
+			].RankedRating
+		: 0;
 	const playerRankData: RankData = getMMRRankData.data.data[
 		getMMRRankData.data.data.length - 1
 		// biome-ignore lint/suspicious/noExplicitAny: No type information
-	].tiers.find((rank: any) => rank.tier === playerRank);
+	].tiers.find((rank: any) => rank.tier === playerRank + 1);
 
 	const body: PlayerProfile = {
+		puuid,
 		playerName,
 		playerLevel: getProfileBanner.data.Identity.AccountLevel,
 		playerRank: playerRankData,
 		playerCard: getBannerData.data,
 		playerTitle: getTitleData?.data ? getTitleData.data : null,
 		playerWallet: getWallet.data,
+		RankedRating: playerRankedRating,
 	};
 	await AsyncStorage.setItem("cache/profile", JSON.stringify(body));
 	return body;
