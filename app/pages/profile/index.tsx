@@ -33,7 +33,7 @@ export default function ShowToken() {
 	}, []);
 
 	return (
-		<View className="flex-col flex-1 justify-center items-center gap-3 bg-background mb-14 px-5">
+		<View className="flex-col flex-1 justify-center items-center gap-3 bg-[hsl(240,10%,3.9%)] mb-14 px-5">
 			<Skeleton
 				isLoading={isLoading}
 				containerStyle={{
