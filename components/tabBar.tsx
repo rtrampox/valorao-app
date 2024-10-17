@@ -14,6 +14,7 @@ const excludedTabs: string[] = [
 	"showToken/index",
 	"profile/tab/index",
 	"profile/components/optionsSheet",
+	"profile/components/lastMatches",
 ];
 
 const TabBar = ({ state, descriptors, navigation }: BottomTabBarProps) => {

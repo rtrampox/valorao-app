@@ -12,7 +12,7 @@
 		"build:local": "eas build -p android --profile production --local",
 		"build:android": "eas build -p android --profile production",
 		"postinstall": "node postinstall/postinstall.js",
-		"transpile:css": "npx tailwind --input .\\app\\styles\\global.css -o .\\node_modules\\nativewind\\.cache\\global.css.android.css"
+		"transpile:css": "npx tailwind .\\app\\styles\\global.css -o .\\node_modules\\nativewind\\.cache\\global.css.android.css"
 	},
 	"dependencies": {
 		"@gorhom/animated-tabbar": "^2.1.2",

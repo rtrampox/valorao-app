@@ -13,6 +13,7 @@ import { Button } from "~/components/button";
 import { getEntitlements, getEntToken } from "./api/getEntitlements";
 import { storeSsidCookie } from "./api/services/storeSsidCookie";
 import * as Updates from "expo-updates";
+import { clearCache } from "./api/services/logout";
 
 export default function Screen() {
 	const [hasToken, setHasToken] = React.useState(false);
@@ -40,6 +41,7 @@ export default function Screen() {
 				const update = await Updates.checkForUpdateAsync();
 
 				if (update.isAvailable) {
+					await clearCache();
 					await Updates.fetchUpdateAsync();
 					await Updates.reloadAsync();
 				}
